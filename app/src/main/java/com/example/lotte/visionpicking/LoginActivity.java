@@ -8,6 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -22,6 +27,10 @@ public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = "LoginActivity";
 
+    //firebase
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference mConditionRef = databaseReference.child("Employee");
+
     @BindView(R.id.login_button)
     Button button;
 
@@ -31,9 +40,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         Log.d(TAG, "Activity start");
+
     }
 
-    @OnClick(R.id.login_button) void click(View v) {
+    @OnClick(R.id.login_button)
+    void click(View v) {
         Log.d(TAG, "clicked");
         if (v.getId() == R.id.login_button) {
             if (BasicValue.getInstance().getMode() == 1) {
@@ -68,6 +79,24 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mConditionRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String employeeId = dataSnapshot.getValue(String.class);
+                Log.d(TAG, employeeId);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
 
