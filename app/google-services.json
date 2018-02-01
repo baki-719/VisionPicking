@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "50775557852",
+    "firebase_url": "https://visionpicking.firebaseio.com",
+    "project_id": "visionpicking",
+    "storage_bucket": "visionpicking.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50775557852:android:66e605d09123d6de",
+        "android_client_info": {
+          "package_name": "com.example.lotte.visionpicking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "50775557852-sq24i307oiqeo850jpmjjsrvadt6hid1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lotte.visionpicking",
+            "certificate_hash": "21e2b1648d570bb1eaea59949fe452b2d42a8e24"
+          }
+        },
+        {
+          "client_id": "50775557852-3d2itu7922no04p1vaclk1p6ipb818a1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI-eLCpQqLvalF4U1pqpJeGcDsCLXpBqk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "50775557852-3d2itu7922no04p1vaclk1p6ipb818a1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
