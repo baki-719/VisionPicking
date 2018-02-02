@@ -1,24 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.lotte.visionpicking.MainActivity">
+    android:layout_height="match_parent">
 
-    <SurfaceView
-        android:id="@+id/surfaceView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="0dp" />
+    <TextureView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/textureView"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/scan_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/navi_fab"
+            android:layout_marginEnd="11dp"
+            android:clickable="true"
+            app:srcCompat="@android:drawable/ic_menu_camera" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/report_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/scan_fab"
+            android:layout_marginEnd="44dp"
+            android:layout_toStartOf="@+id/scan_fab"
+            android:clickable="true"
+            app:srcCompat="@android:drawable/ic_dialog_alert" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/navi_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/todo_fab"
+            android:layout_marginStart="42dp"
+            android:layout_toEndOf="@+id/todo_fab"
+            android:clickable="true"
+            app:srcCompat="@android:drawable/ic_menu_mapmode" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/todo_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="19dp"
+            android:layout_marginStart="14dp"
+            android:clickable="true"
+            app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        app:srcCompat="?android:attr/actionModeFindDrawable"
-        tools:layout_editor_absoluteX="284dp"
-        tools:layout_editor_absoluteY="476dp" />
-</android.support.constraint.ConstraintLayout>
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        app:srcCompat="@android:drawable/ic_menu_rotate" />
+
+
+</RelativeLayout>
