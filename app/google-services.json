@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "50775557852-co8nuer8va149jcoicsi536348bppol6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lotte.visionpicking",
+            "certificate_hash": "a42f0b9924a47dd4554caa5c168d868e6849a311"
+          }
+        },
+        {
           "client_id": "50775557852-sq24i307oiqeo850jpmjjsrvadt6hid1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

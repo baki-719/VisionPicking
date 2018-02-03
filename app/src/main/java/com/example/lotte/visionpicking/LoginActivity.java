@@ -37,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-
     }
 
 
@@ -64,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                 JsonParser parser = new JsonParser();
                 JsonObject object = parser.parse(result.getContents()).getAsJsonObject();
                 final Employee loginEmployee = new Employee(object.get("name").getAsString(), object.get("position").getAsString(), object.get("index").getAsLong());
-                Log.d(TAG, loginEmployee.toString());
+                Log.d(TAG, "qr result : "+loginEmployee.toString());
                 checkId(loginEmployee);
             }
         } else {
@@ -78,8 +77,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot tempSnapshot : dataSnapshot.getChildren()) {
                     Employee temp = tempSnapshot.getValue(Employee.class);
+                    Log.d(TAG, "db value : "+temp.toString());
                     if(loginEmployee.getIndex().equals(temp.getIndex())){
                         login(loginEmployee);
+                        finish();
                     }
                 }
             }
