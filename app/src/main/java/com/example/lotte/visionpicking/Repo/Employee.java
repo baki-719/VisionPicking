@@ -1,4 +1,4 @@
-package com.example.lotte.visionpicking;
+package com.example.lotte.visionpicking.Repo;
 
 import java.io.Serializable;
 

@@ -1,6 +1,7 @@
 package com.example.lotte.visionpicking;
 
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -8,16 +9,25 @@ import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.example.lotte.visionpicking.Repo.Employee;
+import com.example.lotte.visionpicking.Repo.Product;
+import com.example.lotte.visionpicking.Repo.Work;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +39,11 @@ public class MainActivity extends AppCompatActivity {
 
     private CameraPreview mPreview;
     private Employee employee;
-    private String[] listItem;
+    private ArrayList<ListItem> listItems;
+    private ArrayList<Product> productList = new ArrayList<Product>();
+    private ArrayList<Work> works = new ArrayList<Work>();
+
+    private DatabaseReference databaseReferenceProduct = FirebaseDatabase.getInstance().getReference().child("Product");
 
     @BindView(R.id.textureView)
     TextureView mCameraTextureView;
@@ -59,6 +73,41 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         Intent intent = getIntent();
         employee = (Employee) intent.getSerializableExtra("OBJECT");
+        synchronized (works) {
+            makeProductList();
+            makeTodoList();
+        }
+    }
+
+    private synchronized void makeTodoList(){
+        Log.d(TAG, "makeTodoList start");
+        ArrayList<Work> myWorks = new ArrayList<Work>();
+        for(int i  = 0 ; i < works.size(); i++) {
+            Log.d(TAG, "work : " + works.get(i).getStaff());
+            if(works.get(i).getStaff().equals(employee.getIndex()) && !works.get(i).isDone()) myWorks.add(works.get(i));
+        }
+        for(int i = 0 ; i < myWorks.size(); i++) {
+            Date today = new Date();
+            Log.d(TAG, "date : "+today.toString());
+        }
+    }
+
+
+    private void makeProductList() {
+        databaseReferenceProduct.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot tempSnapshot : dataSnapshot.getChildren()) {
+                    Product temp = tempSnapshot.getValue(Product.class);
+                    productList.add(temp);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -82,6 +131,12 @@ public class MainActivity extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.todo_fab:
                 // TODO: 2018-02-03 listView or recyclerView
+                if (todoList.getVisibility() == View.VISIBLE)
+                    todoList.setVisibility(View.INVISIBLE);
+                else {
+                    todoList.setAdapter(new ListAdapter(this, listItems));
+                    todoList.setVisibility(View.VISIBLE);
+                }
                 break;
             case R.id.navi_fab:
                 if (mapImage.getVisibility() == View.VISIBLE)

@@ -16,17 +16,13 @@ import java.util.ArrayList;
 public class ListAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<ListItem> listItemArrayList;
-    private TextView name;
-    private TextView location;
-    private TextView count;
+    private TextView nameView;
+    private TextView locationView;
+    private TextView countView;
 
     public ListAdapter(Context context, ArrayList<ListItem> listItemArrayList) {
         this.context = context;
         this.listItemArrayList = listItemArrayList;
-
-        for(ListItem temp : listItemArrayList) {
-            // TODO: 2018-02-03 중복값 카운트 & count변수 설정
-        }
     }
 
     @Override
@@ -48,13 +44,13 @@ public class ListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item, null);
-            name = convertView.findViewById(R.id.item_name);
-            location = convertView.findViewById(R.id.item_location);
-            count = convertView.findViewById(R.id.item_count);
+            nameView = convertView.findViewById(R.id.item_name);
+            locationView = convertView.findViewById(R.id.item_location);
+            countView = convertView.findViewById(R.id.item_count);
         }
 
-        name.setText(listItemArrayList.get(position).getName());
-        location.setText(listItemArrayList.get(position).getLocation());
+        nameView.setText(listItemArrayList.get(position).getName());
+        locationView.setText(listItemArrayList.get(position).getLocation());
         // TODO: 2018-02-03 갯수 출력
         return convertView;
     }
