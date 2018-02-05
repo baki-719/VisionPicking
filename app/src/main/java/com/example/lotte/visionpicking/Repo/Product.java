@@ -1,56 +1,58 @@
 package com.example.lotte.visionpicking.Repo;
 
+import java.io.Serializable;
+
 /**
  * Created by DEV on 2018-02-04.
  */
 
-public class Product {
-    private Long count;
-    private Long index;
-    private String location;
-    private String name;
+public class Product implements Serializable {
+    private Long total;
+    private String index;
+    private String product_location;
+    private String product_name;
 
-    public Long getCount() {
-        return count;
+    public Long getTotal() {
+        return total;
     }
 
-    public void setCount(Long count) {
-        this.count = count;
+    public void setTotal(Long total) {
+        this.total = total;
     }
 
-    public Long getIndex() {
+    public String getIndex() {
         return index;
     }
 
-    public void setIndex(Long index) {
+    public void setIndex(String index) {
         this.index = index;
     }
 
-    public String getLocation() {
-        return location;
+    public String getProduct_location() {
+        return product_location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setProduct_location(String product_location) {
+        this.product_location = product_location;
     }
 
-    public String getName() {
-        return name;
+    public String getProduct_name() {
+        return product_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
     }
 
     public Product() {
 
     }
 
-    public Product(Long count, Long index, String location, String name) {
+    public Product(Long total, String index, String product_location, String product_name) {
 
-        this.count = count;
+        this.total = total;
         this.index = index;
-        this.location = location;
-        this.name = name;
+        this.product_location = product_location;
+        this.product_name = product_name;
     }
 }

@@ -8,14 +8,14 @@ import java.io.Serializable;
 
 public class Employee implements Serializable{
 
-    private Long index;
+    private String index;
     private String name;
     private String position;
 
     public Employee() {
     }
 
-    public Employee(String name, String position, Long index) {
+    public Employee(String name, String position, String index) {
         this.name = name;
         this.position = position;
         this.index = index;
@@ -37,11 +37,11 @@ public class Employee implements Serializable{
         this.position = position;
     }
 
-    public Long getIndex() {
+    public String getIndex() {
         return index;
     }
 
-    public void setIndex(Long index) {
+    public void setIndex(String index) {
         this.index = index;
     }
 

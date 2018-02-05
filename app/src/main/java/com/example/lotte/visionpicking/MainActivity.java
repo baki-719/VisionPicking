@@ -1,7 +1,6 @@
 package com.example.lotte.visionpicking;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -15,19 +14,17 @@ import android.widget.Toast;
 
 import com.example.lotte.visionpicking.Repo.Employee;
 import com.example.lotte.visionpicking.Repo.Product;
-import com.example.lotte.visionpicking.Repo.Work;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.example.lotte.visionpicking.Repo.WorkDetail;
+import com.example.lotte.visionpicking.Repo.WorkList;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,12 +35,12 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
     private CameraPreview mPreview;
-    private Employee employee;
-    private ArrayList<ListItem> listItems;
-    private ArrayList<Product> productList = new ArrayList<Product>();
-    private ArrayList<Work> works = new ArrayList<Work>();
-
-    private DatabaseReference databaseReferenceProduct = FirebaseDatabase.getInstance().getReference().child("Product");
+    private Employee staff;
+    private ArrayList<Product> productArrayList = new ArrayList<Product>();
+    private ArrayList<WorkList> workListArrayList = new ArrayList<WorkList>();
+    private ArrayList<WorkDetail> workDetailArrayList = new ArrayList<WorkDetail>();
+    private ArrayList<WorkDetail> myWorks = new ArrayList<WorkDetail>();
+    private ArrayList<WorkDetail> finishedWorks = new ArrayList<WorkDetail>();
 
     @BindView(R.id.textureView)
     TextureView mCameraTextureView;
@@ -65,47 +62,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        init();
         fullScreen();
         mPreview = new CameraPreview(this, mCameraTextureView);
+
+        init();
     }
 
     private void init() {
         Intent intent = getIntent();
-        employee = (Employee) intent.getSerializableExtra("OBJECT");
-        synchronized (works) {
-            makeProductList();
-            makeTodoList();
-        }
+        staff = (Employee) intent.getExtras().getSerializable("whoLogin");
+        productArrayList = (ArrayList<Product>) intent.getExtras().getSerializable("productArrayList");
+        workListArrayList = (ArrayList<WorkList>) intent.getExtras().getSerializable("workListArrayList");
+        workDetailArrayList = (ArrayList<WorkDetail>) intent.getExtras().getSerializable("workDetailArrayList");
+        makeMyWorks();
     }
 
-    private synchronized void makeTodoList(){
-        Log.d(TAG, "makeTodoList start");
-        ArrayList<Work> myWorks = new ArrayList<Work>();
-        for(int i  = 0 ; i < works.size(); i++) {
-            Log.d(TAG, "work : " + works.get(i).getStaff());
-            if(works.get(i).getStaff().equals(employee.getIndex()) && !works.get(i).isDone()) myWorks.add(works.get(i));
-        }
-        for(int i = 0 ; i < myWorks.size(); i++) {
-            Date today = new Date();
-            Log.d(TAG, "date : "+today.toString());
-        }
-    }
-
-
-    private void makeProductList() {
-        databaseReferenceProduct.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot tempSnapshot : dataSnapshot.getChildren()) {
-                    Product temp = tempSnapshot.getValue(Product.class);
-                    productList.add(temp);
+    private void makeMyWorks() {
+        for (WorkList temp : workListArrayList) {
+            if (temp.getName().equals(staff.getName())) {
+                for (int i = 0; i < temp.getWork_lists().size(); i++) {
+                    for (int j = 0; j < workDetailArrayList.size(); j++) {
+                        if (workDetailArrayList.get(j).getIndex().equals(temp.getWork_lists().get(i)))
+                            myWorks.add(workDetailArrayList.get(j));
+                    }
                 }
             }
-
+        }
+        Collections.sort(myWorks, new Comparator<WorkDetail>() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public int compare(WorkDetail workDetail, WorkDetail t1) {
+                return workDetail.getProduct_location().compareTo(t1.getProduct_location());
             }
         });
     }
@@ -130,11 +116,10 @@ public class MainActivity extends AppCompatActivity {
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.todo_fab:
-                // TODO: 2018-02-03 listView or recyclerView
                 if (todoList.getVisibility() == View.VISIBLE)
                     todoList.setVisibility(View.INVISIBLE);
                 else {
-                    todoList.setAdapter(new ListAdapter(this, listItems));
+                    todoList.setAdapter(new ListAdapter(this, myWorks));
                     todoList.setVisibility(View.VISIBLE);
                 }
                 break;
@@ -173,8 +158,21 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 JsonParser parser = new JsonParser();
                 JsonObject object = parser.parse(result.getContents()).getAsJsonObject();
-                Toast.makeText(this, object.get("name") + "scan success", Toast.LENGTH_SHORT).show();
-                // TODO: 2018-02-03 db에서 제고수량 줄이여야됨
+                if (object.get("type").getAsString().equals("product")) {
+                    Toast.makeText(this, object.get("product_name") + "scan success", Toast.LENGTH_SHORT).show();
+                    // TODO: 2018-02-03 db에서 제고수량 줄이여야됨
+                    int index = 0;
+                    for (WorkDetail temp : myWorks) {
+                        if (temp.getProduct_name().equals(object.get("product_name").getAsString()))
+                            myWorks.get(index).setCount(myWorks.get(index).getCount() - 1);
+                        index++;
+                    }
+                    for (int i = 0; i < myWorks.size(); i++)
+                        if (myWorks.get(i).getCount() == 0) {
+                            finishedWorks.add(myWorks.get(i));
+                            myWorks.remove(i);
+                        }
+                } else Toast.makeText(this, "잘못된 QR코드 입니다.", Toast.LENGTH_LONG).show();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

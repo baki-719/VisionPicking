@@ -19,9 +19,9 @@
             android:id="@+id/scan_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:layout_alignTop="@+id/navi_fab"
-            android:layout_marginEnd="11dp"
+            android:layout_marginStart="15dp"
             android:clickable="true"
             app:srcCompat="@android:drawable/ic_menu_camera" />
 
@@ -30,8 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/scan_fab"
-            android:layout_marginEnd="44dp"
-            android:layout_toStartOf="@+id/scan_fab"
+            android:layout_marginStart="38dp"
+            android:layout_toEndOf="@+id/scan_fab"
             android:clickable="true"
             app:srcCompat="@android:drawable/ic_dialog_alert" />
 
@@ -40,8 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/todo_fab"
-            android:layout_marginStart="42dp"
-            android:layout_toEndOf="@+id/todo_fab"
+            android:layout_marginEnd="39dp"
+            android:layout_toStartOf="@+id/todo_fab"
             android:clickable="true"
             app:srcCompat="@android:drawable/ic_menu_mapmode" />
 
@@ -50,26 +50,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="19dp"
-            android:layout_marginStart="14dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="18dp"
+            android:layout_marginEnd="17dp"
             android:clickable="true"
             app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/listView"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible"
+            app:srcCompat="@android:drawable/ic_menu_rotate" />
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible"></ListView>
     </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="invisible"
-        app:srcCompat="@android:drawable/ic_menu_rotate" />
-
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:visibility="invisible"></ListView>
 
 </RelativeLayout>

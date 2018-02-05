@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.lotte.visionpicking.Repo.WorkDetail;
+
 import java.util.ArrayList;
 
 /**
@@ -15,12 +17,12 @@ import java.util.ArrayList;
 
 public class ListAdapter extends BaseAdapter {
     private Context context;
-    private ArrayList<ListItem> listItemArrayList;
+    private ArrayList<WorkDetail> listItemArrayList;
     private TextView nameView;
     private TextView locationView;
     private TextView countView;
 
-    public ListAdapter(Context context, ArrayList<ListItem> listItemArrayList) {
+    public ListAdapter(Context context, ArrayList<WorkDetail> listItemArrayList) {
         this.context = context;
         this.listItemArrayList = listItemArrayList;
     }
@@ -49,9 +51,10 @@ public class ListAdapter extends BaseAdapter {
             countView = convertView.findViewById(R.id.item_count);
         }
 
-        nameView.setText(listItemArrayList.get(position).getName());
-        locationView.setText(listItemArrayList.get(position).getLocation());
-        // TODO: 2018-02-03 갯수 출력
+        nameView.setText(listItemArrayList.get(position).getProduct_name());
+        locationView.setText(listItemArrayList.get(position).getProduct_location());
+        countView.setText(listItemArrayList.get(position).getCount().toString());
+
         return convertView;
     }
 }

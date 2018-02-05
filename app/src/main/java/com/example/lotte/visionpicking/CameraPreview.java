@@ -28,7 +28,7 @@ import java.util.concurrent.Semaphore;
 /**
  * Created by LOTTE on 2018-02-02.
  */
-
+// TODO: 2018-02-05 onResume 고치기
 public class CameraPreview extends Thread {
     private final static String TAG = "CameraPreview";
 
