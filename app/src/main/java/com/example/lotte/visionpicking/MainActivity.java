@@ -10,19 +10,23 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lotte.visionpicking.Repo.Employee;
 import com.example.lotte.visionpicking.Repo.Product;
 import com.example.lotte.visionpicking.Repo.WorkDetail;
 import com.example.lotte.visionpicking.Repo.WorkList;
+import com.example.lotte.visionpicking.Thread.SetDataThread;
+import com.example.lotte.visionpicking.Util.CameraPreview;
+import com.example.lotte.visionpicking.Util.ListAdapter;
+import com.example.lotte.visionpicking.Util.PathFinder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -36,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private CameraPreview mPreview;
     private Employee staff;
+    private String myWorksIdex;
     private ArrayList<Product> productArrayList = new ArrayList<Product>();
     private ArrayList<WorkList> workListArrayList = new ArrayList<WorkList>();
     private ArrayList<WorkDetail> workDetailArrayList = new ArrayList<WorkDetail>();
@@ -56,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView mapImage;
     @BindView(R.id.listView)
     ListView todoList;
+    @BindView(R.id.pathText)
+    TextView pathText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +89,10 @@ public class MainActivity extends AppCompatActivity {
             if (temp.getName().equals(staff.getName())) {
                 for (int i = 0; i < temp.getWork_lists().size(); i++) {
                     for (int j = 0; j < workDetailArrayList.size(); j++) {
-                        if (workDetailArrayList.get(j).getIndex().equals(temp.getWork_lists().get(i)))
+                        if (workDetailArrayList.get(j).getIndex().equals(temp.getWork_lists().get(i)) && !temp.isFinished()) {
                             myWorks.add(workDetailArrayList.get(j));
+                            myWorksIdex = temp.getIndex();
+                        }
                     }
                 }
             }
@@ -94,6 +103,16 @@ public class MainActivity extends AppCompatActivity {
                 return workDetail.getProduct_location().compareTo(t1.getProduct_location());
             }
         });
+        Log.d(TAG, new PathFinder(makePath()).getPath());
+        pathText.setText(new PathFinder(makePath()).getPath());
+    }
+
+    private String makePath() {
+        String reuslt = "";
+        for(WorkDetail temp : myWorks) {
+            reuslt += temp.getProduct_location();
+        }
+        return reuslt;
     }
 
     @Override
@@ -124,11 +143,14 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.navi_fab:
-                if (mapImage.getVisibility() == View.VISIBLE)
+                if (mapImage.getVisibility() == View.VISIBLE && pathText.getVisibility()==View.VISIBLE) {
                     mapImage.setVisibility(View.INVISIBLE);
-                else {
-                    mapImage.setImageResource(R.drawable.navi_sample);
+                    pathText.setVisibility(View.INVISIBLE);
+                } else if(mapImage.getVisibility() == View.INVISIBLE && pathText.getVisibility() == View.INVISIBLE){
+                    mapImage.setImageResource(R.drawable.map);
+                    mapImage.setImageAlpha(120);
                     mapImage.setVisibility(View.VISIBLE);
+                    pathText.setVisibility(View.VISIBLE);
                 }
                 break;
             case R.id.report_fab:
@@ -160,18 +182,24 @@ public class MainActivity extends AppCompatActivity {
                 JsonObject object = parser.parse(result.getContents()).getAsJsonObject();
                 if (object.get("type").getAsString().equals("product")) {
                     Toast.makeText(this, object.get("product_name") + "scan success", Toast.LENGTH_SHORT).show();
-                    // TODO: 2018-02-03 db에서 제고수량 줄이여야됨
+                    String prodcutIndex = object.get("index").getAsString();
+                    // TODO: 2018-02-03 db에서 제고수량 줄여야됨
                     int index = 0;
                     for (WorkDetail temp : myWorks) {
                         if (temp.getProduct_name().equals(object.get("product_name").getAsString()))
                             myWorks.get(index).setCount(myWorks.get(index).getCount() - 1);
                         index++;
                     }
-                    for (int i = 0; i < myWorks.size(); i++)
+                    for (int i = 0; i < myWorks.size(); i++) {
                         if (myWorks.get(i).getCount() == 0) {
                             finishedWorks.add(myWorks.get(i));
                             myWorks.remove(i);
+                            if (myWorks.isEmpty()) {
+                                SetDataThread setDataThread = new SetDataThread(finishedWorks, productArrayList, myWorksIdex, prodcutIndex);
+                                setDataThread.start();
+                            }
                         }
+                    }
                 } else Toast.makeText(this, "잘못된 QR코드 입니다.", Toast.LENGTH_LONG).show();
             }
         } else {

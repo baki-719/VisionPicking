@@ -1,4 +1,4 @@
-package com.example.lotte.visionpicking;
+package com.example.lotte.visionpicking.Thread;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +51,7 @@ public class LoadDataThread extends Thread {
                 for (DataSnapshot temp : dataSnapshot.child("Employee").getChildren()) {
                     Employee tempEmp = new Employee(temp.child("name").getValue().toString(), temp.child("position").getValue().toString(), temp.getKey());
                     employeeArrayList.add(tempEmp);
+                    Log.d(TAG, employeeArrayList.size()+"");
                 }
                 //load product data
                 for (DataSnapshot temp : dataSnapshot.child("Inventory").getChildren()) {
@@ -61,6 +62,7 @@ public class LoadDataThread extends Thread {
                 for (DataSnapshot temp : dataSnapshot.child("WorkDetails").getChildren()) {
                     WorkDetail tempWorkDetail = temp.getValue(WorkDetail.class);
                     tempWorkDetail.setIndex(temp.getKey());
+                    tempWorkDetail.setDoneCount();
                     workDetailArrayList.add(tempWorkDetail);
                 }
                 //load workList
@@ -91,5 +93,6 @@ public class LoadDataThread extends Thread {
         bundle.putSerializable("workDetailArrayList", workDetailArrayList);
         msg.setData(bundle);
         handler.sendMessage(msg);
+        Log.d(TAG, "finish");
     }
 }

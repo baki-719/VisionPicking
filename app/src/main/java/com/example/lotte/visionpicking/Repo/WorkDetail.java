@@ -12,11 +12,21 @@ import java.util.Comparator;
 public class WorkDetail implements Serializable {
 
     private Long count;
+    private Long doneCount;
     private boolean isFinish;
     private int picking_time;
     private String product_location;
     private String product_name;
     private String index;
+    private String productIndex;
+
+    public String getProductIndex() {
+        return productIndex;
+    }
+
+    public void setProductIndex(String productIndex) {
+        this.productIndex = productIndex;
+    }
 
     public String getIndex() {
         return index;
@@ -66,16 +76,25 @@ public class WorkDetail implements Serializable {
         this.product_name = product_name;
     }
 
+    public Long getDoneCount() {
+        return doneCount;
+    }
+
+    public void setDoneCount() {
+        this.doneCount = count;
+    }
+
+
     public WorkDetail() {
 
     }
 
     public WorkDetail(Long count, boolean isFinish, int picking_time, String product_location, String product_name) {
-
         this.count = count;
         this.isFinish = isFinish;
         this.picking_time = picking_time;
         this.product_location = product_location;
         this.product_name = product_name;
+
     }
 }

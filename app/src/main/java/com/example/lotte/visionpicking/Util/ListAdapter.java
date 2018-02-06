@@ -1,4 +1,4 @@
-package com.example.lotte.visionpicking;
+package com.example.lotte.visionpicking.Util;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.lotte.visionpicking.R;
 import com.example.lotte.visionpicking.Repo.WorkDetail;
 
 import java.util.ArrayList;

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class WorkList implements Serializable {
 
+    private boolean isFinished;
     private String index;
     private String name;
     private String position;
@@ -16,6 +17,14 @@ public class WorkList implements Serializable {
     private ArrayList<String> work_lists = new ArrayList<String>();
 
     public WorkList() {
+    }
+
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished = finished;
     }
 
     public String getIndex() {
@@ -58,12 +67,13 @@ public class WorkList implements Serializable {
         this.work_lists = work_lists;
     }
 
-    public WorkList(String name, String position, Long total, ArrayList<String> work_lists) {
+    public WorkList(boolean isFinished, String index, String name, String position, Long total, ArrayList<String> work_lists) {
 
+        this.isFinished = isFinished;
+        this.index = index;
         this.name = name;
         this.position = position;
         this.total = total;
         this.work_lists = work_lists;
     }
-
 }

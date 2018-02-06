@@ -13,11 +13,8 @@ import com.example.lotte.visionpicking.Repo.Employee;
 import com.example.lotte.visionpicking.Repo.Product;
 import com.example.lotte.visionpicking.Repo.WorkDetail;
 import com.example.lotte.visionpicking.Repo.WorkList;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.example.lotte.visionpicking.Thread.LoadDataThread;
+import com.example.lotte.visionpicking.Util.BasicValue;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -56,7 +53,9 @@ public class LoginActivity extends AppCompatActivity {
             case 0: // QRcode skip
                 break;
             case 1: // QRcode not skip
-                new IntentIntegrator(this).initiateScan();
+                IntentIntegrator intentIntegrator = new IntentIntegrator(this);
+                intentIntegrator.setOrientationLocked(true);
+                intentIntegrator.initiateScan();
                 break;
         }
     }
@@ -82,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 JsonParser parser = new JsonParser();
                 JsonObject object = parser.parse(result.getContents()).getAsJsonObject();
+                Log.d(TAG, object.toString());
                 if (checkId(object)) login(
                         new Employee(object.get("name").getAsString(), object.get("position").getAsString(), object.get("index").getAsString()),
                         productArrayList,
@@ -98,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean checkId(JsonObject object) {
         for (Employee temp : employeeArrayList) {
             if (object.get("index").getAsString().equals(temp.getIndex())) return true;
+            Log.d(TAG, temp.getIndex());
         }
         return false;
     }

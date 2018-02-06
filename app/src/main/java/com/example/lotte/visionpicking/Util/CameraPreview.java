@@ -1,4 +1,4 @@
-package com.example.lotte.visionpicking;
+package com.example.lotte.visionpicking.Util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -99,12 +99,14 @@ public class CameraPreview extends Thread {
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
             // TODO Auto-generated method stub
+            Log.d(TAG, "onSurfaceTextureDestroyed");
             return false;
         }
 
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
             // TODO Auto-generated method stub
+//            Log.d(TAG, "onSurfaceTextureUpdated");
         }
     };
 
