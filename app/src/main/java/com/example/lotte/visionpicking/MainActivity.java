@@ -72,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         fullScreen();
         mPreview = new CameraPreview(this, mCameraTextureView);
-
         init();
+        Toast.makeText(this, staff.getName()+"님 오늘 하루도 힘내세요 !" , Toast.LENGTH_SHORT).show();
     }
 
     private void init() {
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        todoList.setAdapter(new ListAdapter(this, myWorks));
         mPreview.onResume();
     }
 
@@ -185,10 +186,11 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 JsonParser parser = new JsonParser();
                 JsonObject object = parser.parse(result.getContents()).getAsJsonObject();
-                if (object.get("type").getAsString().equals("product")) {
-                    Toast.makeText(this, object.get("product_name") + "scan success", Toast.LENGTH_SHORT).show();
+                boolean isMyWork = false;
+                for(WorkDetail temp : myWorks) if(temp.getProduct_name().equals(object.get("product_name").getAsString())) isMyWork = true;
+                if (object.get("type").getAsString().equals("product")&& isMyWork) {
+                    Toast.makeText(this, object.get("product_name") + "1개 피킹 완료", Toast.LENGTH_SHORT).show();
                     String prodcutIndex = object.get("index").getAsString();
-                    // TODO: 2018-02-03 db에서 제고수량 줄여야됨
                     int index = 0;
                     for (WorkDetail temp : myWorks) {
                         if (temp.getProduct_name().equals(object.get("product_name").getAsString()))
