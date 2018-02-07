@@ -1,5 +1,7 @@
 package com.example.lotte.visionpicking.Util;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -42,7 +44,16 @@ public class PathFinder {
             }
             if(result.length() == section.length()) break;
         }
-        return result;
+
+        Log.d(TAG, "PathFinder : " + result);
+        String finalResult = "";
+        for (int i = 0; i < result.length(); i++) {
+            if(i == result.length()-1) finalResult += result.charAt(i);
+            else {
+                finalResult += result.charAt(i) + " → ";
+            }
+        }
+        return finalResult;
     }
 
 

@@ -106,7 +106,8 @@ public class CameraPreview extends Thread {
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
             // TODO Auto-generated method stub
-//            Log.d(TAG, "onSurfaceTextureUpdated");
+            Log.d(TAG, "onSurfaceTextureUpdated");
+
         }
     };
 
@@ -205,7 +206,8 @@ public class CameraPreview extends Thread {
 
     public void onResume() {
         Log.d(TAG, "onResume");
-        setSurfaceTextureListener();
+        if(mTextureView.isAvailable()) openCamera();
+        else setSurfaceTextureListener();
     }
 
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);

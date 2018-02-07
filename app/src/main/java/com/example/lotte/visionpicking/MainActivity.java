@@ -1,5 +1,6 @@
 package com.example.lotte.visionpicking;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private CameraPreview mPreview;
     private Employee staff;
-    private String myWorksIdex;
+    private String myWorksIndex;
     private ArrayList<Product> productArrayList = new ArrayList<Product>();
     private ArrayList<WorkList> workListArrayList = new ArrayList<WorkList>();
     private ArrayList<WorkDetail> workDetailArrayList = new ArrayList<WorkDetail>();
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                     for (int j = 0; j < workDetailArrayList.size(); j++) {
                         if (workDetailArrayList.get(j).getIndex().equals(temp.getWork_lists().get(i)) && !temp.isFinished()) {
                             myWorks.add(workDetailArrayList.get(j));
-                            myWorksIdex = temp.getIndex();
+                            myWorksIndex = temp.getIndex();
                         }
                     }
                 }
@@ -103,16 +104,15 @@ public class MainActivity extends AppCompatActivity {
                 return workDetail.getProduct_location().compareTo(t1.getProduct_location());
             }
         });
-        Log.d(TAG, new PathFinder(makePath()).getPath());
         pathText.setText(new PathFinder(makePath()).getPath());
     }
 
     private String makePath() {
-        String reuslt = "";
-        for(WorkDetail temp : myWorks) {
-            reuslt += temp.getProduct_location();
+        String result = "";
+        for (WorkDetail temp : myWorks) {
+            result += temp.getProduct_location();
         }
-        return reuslt;
+        return result;
     }
 
     @Override
@@ -131,41 +131,46 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
+    @SuppressLint("Range")
+    private void naviImageVisible(int visible) {
+        pathText.setVisibility(visible);
+        pathText.setAlpha(179);
+        mapImage.setImageResource(R.drawable.map);
+        mapImage.setImageAlpha(179);
+        mapImage.setVisibility(visible);
+    }
+
     @OnClick({R.id.todo_fab, R.id.navi_fab, R.id.report_fab, R.id.scan_fab, R.id.imageView})
     void onClick(View v) {
         switch (v.getId()) {
             case R.id.todo_fab:
                 if (todoList.getVisibility() == View.VISIBLE)
-                    todoList.setVisibility(View.INVISIBLE);
+                    todoList.setVisibility(View.GONE);
                 else {
                     todoList.setAdapter(new ListAdapter(this, myWorks));
                     todoList.setVisibility(View.VISIBLE);
                 }
                 break;
             case R.id.navi_fab:
-                if (mapImage.getVisibility() == View.VISIBLE && pathText.getVisibility()==View.VISIBLE) {
-                    mapImage.setVisibility(View.INVISIBLE);
-                    pathText.setVisibility(View.INVISIBLE);
-                } else if(mapImage.getVisibility() == View.INVISIBLE && pathText.getVisibility() == View.INVISIBLE){
-                    mapImage.setImageResource(R.drawable.map);
-                    mapImage.setImageAlpha(120);
-                    mapImage.setVisibility(View.VISIBLE);
-                    pathText.setVisibility(View.VISIBLE);
+                if (mapImage.getVisibility() == View.VISIBLE) {
+                    naviImageVisible(View.INVISIBLE);
+                } else {
+                    naviImageVisible(View.VISIBLE);
                 }
                 break;
             case R.id.report_fab:
                 // TODO: 2018-02-03 캡처후 서버에 전송
                 break;
             case R.id.scan_fab:
-                new IntentIntegrator(this).initiateScan();
+                IntentIntegrator intentIntegrator = new IntentIntegrator(this);
+                intentIntegrator.setCaptureActivity(CustomCaptureActivity.class);
+                intentIntegrator.setOrientationLocked(false);
+                intentIntegrator.initiateScan();
                 break;
             case R.id.imageView:
                 if (mapImage.getVisibility() == View.VISIBLE)
-                    mapImage.setVisibility(View.INVISIBLE);
-                else {
-                    mapImage.setImageResource(R.drawable.navi_sample);
-                    mapImage.setVisibility(View.VISIBLE);
-                }
+                    mapImage.setVisibility(View.GONE);
+                    pathText.setVisibility(View.GONE);
                 break;
         }
     }
@@ -195,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                             finishedWorks.add(myWorks.get(i));
                             myWorks.remove(i);
                             if (myWorks.isEmpty()) {
-                                SetDataThread setDataThread = new SetDataThread(finishedWorks, productArrayList, myWorksIdex, prodcutIndex);
+                                SetDataThread setDataThread = new SetDataThread(finishedWorks, productArrayList, myWorksIndex, prodcutIndex);
                                 setDataThread.start();
                             }
                         }

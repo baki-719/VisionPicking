@@ -54,7 +54,8 @@ public class LoginActivity extends AppCompatActivity {
                 break;
             case 1: // QRcode not skip
                 IntentIntegrator intentIntegrator = new IntentIntegrator(this);
-                intentIntegrator.setOrientationLocked(true);
+                intentIntegrator.setCaptureActivity(CustomCaptureActivity.class);
+                intentIntegrator.setOrientationLocked(false);
                 intentIntegrator.initiateScan();
                 break;
         }
